@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<form action="127.0.0.1/pic/modityName" method="post">
+			<input type="file" name="img" multiple="multiple" />	
+		</form>
+	</body>
+</html>
+
+
+
+package com.izaodao.exercise;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+
+/*
+ * 1 get the src dir's picture
+ * 2 change their names
+ * 3 output them to the target dir
+ * 
+ * 
+ */
+
+
+public class ChangePicName {
+	
+	public void writeFileAndDownLoad(String directory,String newFileName_dat,String data){
+		byte[] sourceByte = data.getBytes();
+	     String path = directory;
+	     String fileName = newFileName_dat;
+	     if(null != sourceByte){
+	         try {
+	             File file = new File(path+fileName);//文件路径（路径+文件名）
+	             if (!file.exists()) {   //文件不存在则创建文件，先创建目录
+	                 File dir = new File(file.getParent());
+	                 dir.mkdirs();
+	                 file.createNewFile();
+	             }
+	             FileOutputStream outStream = new FileOutputStream(file); //文件输出流将数据写入文件
+	             outStream.write(sourceByte);
+	             outStream.close();
+	             download(path, fileName);
+	         } catch (Exception e) {
+	             e.printStackTrace();
+	             // do something
+	         } finally {
+	             // do something
+	         }
+	     }
+	
+		
+	}
+	
+	public String download(String path , String fileName) {
+		response.setContentType("application/x-download");  
+		String filedownload = path;
+		String filedisplay = fileName;
+		filedisplay = URLEncoder.encode(filedisplay,"UTF-8");（如果文件名称加密，使用此代码具有解密功能）
+		response.addHeader("Content-Disposition","attachment;filename=" + filedisplay);  
+		OutputStream outp = null;  
+		FileInputStream in = null;  
+		  try{  
+		       outp = response.getOutputStream();  
+		       in = new FileInputStream(filedownload);  
+		        byte[] b = new byte[1024];  
+		           int i = 0;  
+		         while((i = in.read(b)) > 0)  {  
+		              outp.write(b, 0, i);  
+		        }  
+		          outp.flush();  
+		     } catch(Exception e){  
+		        System.out.println("Error!");  
+		         e.printStackTrace();  
+		      }finally{  
+		           if(in != null)  
+		            {  
+		              try {
+		in.close();
+		} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}  
+		             in = null;  
+		           }  
+		          if(outp != null)  
+		           {  
+		               try {
+		outp.close();
+		} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}  
+		              outp = null;  
+		          }  
+		       } 
+		  return null;
+
+		}
+	
+	public static void function(File[] files) throws Exception{
+		for (File file : files) {
+			if(!file.exists())
+			  {
+			   file.createNewFile();
+			  }
+			  System.out.println("修改前文件名称是："+file.getName());
+			  String rootPath = file.getParent();
+			  System.out.println("根路径是："+rootPath);
+			  File newFile = new File(rootPath + File.separator + "dogg00.png");
+			  System.out.println("修改后文件名称是："+newFile.getName());
+			  
+			  if (file.renameTo(newFile)) 
+			  {
+			   System.out.println("修改成功!");
+			   
+			  } 
+			  else 
+			  {
+			   System.out.println("修改失败");
+			  }
+		}
+	}
+	
+	
+	
+}
